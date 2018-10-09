@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <h1>{{instance.title}}</h1>
+    <h4>{{instance.content}}</h4>
+
+    <div class='row'>
+    <div class='col-sm-12 '>
+
+        <hr/>
+        <br/>
+
+        <div>
+
+            <p class='lead'>Comments</p>
+            <form method="POST" action="{% url 'detail' instance.id %}"> {% csrf_token %}
+                {{ comment_form.as_p }}
+                <input type='submit' value='Post comment' class='btn btn-default'>
+            </form>
+            <hr/>
+            {% for comment in comments %}
+
+            <blockquote>
+              <p>{{ comment.content }}</p>
+              <footer>
+                {{ comment.timestamp|timesince }} ago |
+                {% if comment.children.count > 0 %}
+                  {{ comment.children.count }}
+                  Comment
+                  {% if comment.children.count > 1 %}s
+                  {% endif %} |
+                {% endif %}
+                <a class='comment-reply-btn' href='#'>Reply</a>
+              </footer>
+              <div class='comment-reply'>
+                 {% for child_comment in comment.children %}
+                    <blockquote>
+                    <p>{{ child_comment.content }}</p>
+                    <footer> {{ child_comment.timestamp|timesince }} ago</footer>
+                    </blockquote>
+                 {% endfor %}
+                <form method="POST" action="{% url 'detail' instance.id %}"> {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <input type='hidden' name='parent_id' value='{{ comment.id }}'>
+                    <input type='submit' value='Reply' class='btn btn-default'>
+                </form>
+            </div>
+
+            </blockquote>
+
+            <hr/>
+            {% endfor %}
+        </div>
+
+
+
+
+    </div>
+    </div>
+    </div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        function setTitle(value) {
+        $("#preview-title").text(value)
+    }
+    setTitle(titleInput.val())
+
+    titleInput.keyup(function(){
+        var newContent = $(this).val()
+        setTitle(newContent)
+    })
+
+    $(".comment-reply-btn").click(function(event){
+        event.preventDefault();
+        $(this).parent().next(".comment-reply").fadeToggle();
+    })
+
+
+    // preview-title
+    // preview-content
+
+})
+
+</script>
+  </body>
+</html>
