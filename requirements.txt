@@ -22,7 +22,7 @@ kombu==4.1.0
 markdown2==2.3.6
 mysqlclient==1.3.12
 pika==0.11.2
-Pillow==5.1.0
+Pillow==8.3.2
 PyJWT==1.6.1
 PySocks==1.6.8
 pytz==2017.3
